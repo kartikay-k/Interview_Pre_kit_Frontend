@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
@@ -16,7 +16,7 @@ import type { Kit } from '@/types/kit';
 const TABS = ['Overview', 'Questions', 'Flashcards', 'Schedule', 'Practice'] as const;
 type Tab = typeof TABS[number];
 
-export default function KitPage() {
+function KitPageContent() {
   const { id } = useParams<{ id: string }>();
   const { user, loading } = useAuthStore();
   const router = useRouter();
@@ -133,5 +133,18 @@ export default function KitPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function KitPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="flex items-center justify-center py-24 text-gray-400">Loading kit...</div>
+      </div>
+    }>
+      <KitPageContent />
+    </Suspense>
   );
 }

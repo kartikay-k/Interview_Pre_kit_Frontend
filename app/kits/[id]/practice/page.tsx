@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
@@ -10,7 +10,7 @@ import type { Flashcard } from '@/types/kit';
 type ConfidenceLevel = 1 | 2 | 3;
 interface CardResult { flashcardId: string; confidence: ConfidenceLevel; }
 
-export default function PracticePage() {
+function PracticePageContent() {
   const { id } = useParams<{ id: string }>();
   const { user, loading } = useAuthStore();
   const router = useRouter();
@@ -144,5 +144,18 @@ export default function PracticePage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PracticePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen">
+        <Navbar />
+        <div className="flex items-center justify-center py-24 text-gray-400">Loading practice session...</div>
+      </div>
+    }>
+      <PracticePageContent />
+    </Suspense>
   );
 }
