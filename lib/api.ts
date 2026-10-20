@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const normalizedApiUrl = configuredApiUrl.replace(/\/+$/, '');
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api',
+  baseURL: normalizedApiUrl.endsWith('/api') ? normalizedApiUrl : `${normalizedApiUrl}/api`,
 });
 
 // Attach token to every request
